@@ -27,6 +27,9 @@ go test -v ./...
 go fmt ./...
 ```
 
+### 🤖 Agent Skills & Assistentes de IA
+O repositório inclui um pacote de **Agent Skills** em [`.agents/skills/`](/.agents/README.md) derivadas de [`samber/cc-skills-golang`](https://github.com/samber/cc-skills-golang). Caso utilize editores e ferramentas com suporte a agentes de IA (como Antigravity, Cursor ou Claude Code), as diretrizes de concorrência, tratamento de erros e segurança em Go serão lidas e aplicadas automaticamente durante a edição de código.
+
 ### Validação Automática (CI/CD)
 Após abrir ou atualizar um Pull Request para a branch `main`, o GitHub Actions executará automaticamente o workflow **CI - Run Go Tests**. 
 
