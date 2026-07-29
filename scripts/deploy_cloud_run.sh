@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Configuration
-SERVICE_NAME="abibliadigital"
+SERVICE_NAME="abibliadigital-api-br"
 REGION="us-central1"
 MEMORY="128Mi"
 MIN_INSTANCES="0"

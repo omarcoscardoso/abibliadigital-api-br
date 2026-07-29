@@ -58,7 +58,7 @@ O Cloud Run oferece um **Free Tier generoso** (2 milhões de requisições/mês,
 ./scripts/deploy_cloud_run.sh
 ```
 
-### Comando Manual:
+### Deploy Manual:
 ```bash
 # Setar o seu ID do projeto no GCP
 gcloud config set project SEU_PROJECT_ID
@@ -67,7 +67,7 @@ gcloud config set project SEU_PROJECT_ID
 gcloud builds submit --tag gcr.io/SEU_PROJECT_ID/abibliadigital:latest .
 
 # Fazer o deploy no Cloud Run
-gcloud run deploy abibliadigital \
+gcloud run deploy abibliadigital-api-br \
   --image gcr.io/SEU_PROJECT_ID/abibliadigital:latest \
   --platform managed \
   --region us-central1 \
@@ -79,7 +79,66 @@ gcloud run deploy abibliadigital \
 
 ---
 
-## 🌐 4. Configuração na Cloudflare (Domínio Personalizado & CDN)
+## ⚡ 4. Deploy Automático via Cloud Build (CI/CD)
+
+O arquivo [`cloudbuild.yaml`](file:///home/cardoso/projetos/abibliadigital/cloudbuild.yaml) orquestra a compilação, o envio da imagem para o **Artifact Registry** e o deploy no **Cloud Run** (`abibliadigital-api-br`).
+
+### Pré-requisitos e Checklist do GCP:
+
+1. **Ativar as APIs necessárias no GCP:**
+   ```bash
+   gcloud services enable \
+     cloudbuild.googleapis.com \
+     run.googleapis.com \
+     artifactregistry.googleapis.com
+   ```
+
+2. **Criar o repositório no Artifact Registry (se ainda não existir):**
+   ```bash
+   gcloud artifacts repositories create abibliadigital \
+     --repository-format=docker \
+     --location=us-central1 \
+     --description="Repositório Docker para a API ABíbliaDigital"
+   ```
+
+3. **Conceder permissões para a Service Account do Cloud Build:**
+   A conta de serviço do Cloud Build (`[PROJECT_NUMBER]@cloudbuild.gserviceaccount.com`) precisa das seguintes permissões no IAM:
+   - **Cloud Run Admin** (`roles/run.admin`)
+   - **Service Account User** (`roles/iam.serviceAccountUser`)
+   - **Artifact Registry Writer** (`roles/artifactregistry.writer`)
+
+   *Comandos para conceder as permissões via `gcloud`:*
+   ```bash
+   PROJECT_NUMBER=$(gcloud projects describe $(gcloud config get-value project) --format='value(projectNumber)')
+
+   # Conceder Cloud Run Admin
+   gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
+     --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+     --role="roles/run.admin"
+
+   # Conceder Service Account User
+   gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
+     --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+     --role="roles/iam.serviceAccountUser"
+
+   # Conceder Artifact Registry Writer
+   gcloud projects add-iam-policy-binding $(gcloud config get-value project) \
+     --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+     --role="roles/artifactregistry.writer"
+   ```
+
+4. **Criar o Trigger no Cloud Build Console:**
+   - Acesse **GCP Console** -> **Cloud Build** -> **Triggers**.
+   - Clique em **Create Trigger**.
+   - **Name:** `deploy-abibliadigital-api-br`
+   - **Event:** `Push to a branch` (branch `^main$`).
+   - **Source:** Seu repositório GitHub (`omarcoscardoso/abibliadigital-api-br`).
+   - **Configuration:** `Cloud Build configuration file (yaml or json)` -> `cloudbuild.yaml`.
+   - Salve a Trigger. Qualquer `git push` para a branch `main` disparará o deploy automático!
+
+---
+
+## 🌐 5. Configuração na Cloudflare (Domínio Personalizado & CDN)
 
 Para mapear seu domínio (ex: `abibliadigital.api.br`) e obter cache gratuito nas bordas globalmente:
 
