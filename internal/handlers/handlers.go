@@ -231,7 +231,7 @@ func (h *APIHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 func (h *APIHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusCreated, map[string]interface{}{
 		"name":          "User",
-		"email":         "user@abibliadigital.com.br",
+		"email":         "user@abibliadigital.api.br",
 		"token":         "mock-jwt-token",
 		"notifications": true,
 	})
@@ -240,7 +240,7 @@ func (h *APIHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (h *APIHandler) UpdateToken(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, map[string]interface{}{
 		"name":  "User",
-		"email": "user@abibliadigital.com.br",
+		"email": "user@abibliadigital.api.br",
 		"token": "mock-jwt-token",
 	})
 }

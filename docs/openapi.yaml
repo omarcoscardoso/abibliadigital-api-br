@@ -7,17 +7,17 @@ info:
     RESTful Bible API with 7 versions, 4 languages and multiple features to simplify your day to day.
   contact:
     name: Contact us
-    url: https://www.abibliadigital.com.br/
+    url: https://abibliadigital.api.br/
   license:
-    name: BSD 2-Clause "Simplified" License
-    url: https://github.com/omarciovsena/abibliadigital/blob/master/LICENSE.md
-  version: 0.3.2
+    name: MIT License
+    url: https://github.com/omarcoscardoso/abibliadigital-api-br/blob/main/LICENSE.md
+  version: 1.0.0
 
 servers:
-  - url: https://www.abibliadigital.com.br/api
+  - url: https://abibliadigital.api.br/api
     description: Production server
 
-  - url: http://localhost:3000/api
+  - url: http://localhost:8080/api
     description: Local server
 
 tags:

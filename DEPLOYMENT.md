@@ -81,11 +81,11 @@ gcloud run deploy abibliadigital \
 
 ## 🌐 4. Configuração na Cloudflare (Domínio Personalizado & CDN)
 
-Para mapear seu domínio (ex: `api.abibliadigital.com.br`) e obter cache gratuito nas bordas globalmente:
+Para mapear seu domínio (ex: `abibliadigital.api.br`) e obter cache gratuito nas bordas globalmente:
 
 1. **Domínio Customizado no Cloud Run:**
    - Acesse o console do **GCP Cloud Run** -> **Manage Custom Domains**.
-   - Adicione o seu subdomínio (ex: `api.abibliadigital.com.br`).
+   - Adicione o seu domínio (ex: `abibliadigital.api.br`).
    - Copie o registro CNAME fornecido pelo GCP (ex: `ghs.googlehosted.com`).
 
 2. **Configuração de DNS na Cloudflare:**

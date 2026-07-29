@@ -134,7 +134,7 @@ def parse_pug_to_html(loc):
         <a href="https://github.com/omarciovsena/abibliadigital/blob/master/DOCUMENTATION.md/" target="_blank" title="{get("documentation")}">{get("andMore")}</a>
       </p>
       <form id="form-1">
-        <label id="basic-addon3" for="path">https://www.abibliadigital.com.br/api/</label>
+        <label id="basic-addon3" for="path">https://abibliadigital.api.br/api/</label>
         <input id="path" type="text" aria-describedby="basic-addon3" value="verses/nvi/sl/23" placeholder="verses/{{version}}/{{book}}/{{chapter}}/{{number}}">
         <button id="button-addon1" type="submit" title="{get("search")}">{get("search")}</button>
       </form>
@@ -174,10 +174,10 @@ def main():
     os.makedirs("public/en", exist_ok=True)
     os.makedirs("public/pt", exist_ok=True)
 
-    with open("views/locales/pt.json", "r", encoding="utf-8") as f:
+    with open("data/locales/pt.json", "r", encoding="utf-8") as f:
         pt = json.load(f)
 
-    with open("views/locales/en.json", "r", encoding="utf-8") as f:
+    with open("data/locales/en.json", "r", encoding="utf-8") as f:
         en = json.load(f)
 
     with open("public/index.html", "w", encoding="utf-8") as f:
