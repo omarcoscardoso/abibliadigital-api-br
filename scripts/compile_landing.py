@@ -39,10 +39,10 @@ def parse_pug_to_html(loc):
         <li><button class="icon-close menu-toggle"></button></li>
         <li><a class="text section-scroll" href="#about" title="{get("aboutTitle")}">{get("about")}</a></li>
         <li><a class="text section-scroll" href="#howToUse" title="{get("howToUseTitle")}">{get("howToUse")}</a></li>
-        <li><a class="text" href="https://github.com/omarciovsena/abibliadigital" target="_blank" title="{get("documentationTitle")}">{get("documentation")}</a></li>
+        <li><a class="text" href="https://github.com/omarcoscardoso/abibliadigital-api-br" target="_blank" title="{get("documentationTitle")}">{get("documentation")}</a></li>
         <li><a class="text section-scroll" href="#donate" title="{get("donateTitle")}">{get("donate")}</a></li>
-        <li><a class="icon-github" href="https://github.com/omarciovsena/abibliadigital" target="_blank" title="{get("githubTitle")}"></a></li>
-        <li><a class="icon-twitter" href="https://twitter.com/omarciovsena" target="_blank" title="{get("contactTitle")}"></a></li>
+        <li><a class="icon-github" href="https://github.com/omarcoscardoso/abibliadigital-api-br" target="_blank" title="{get("githubTitle")}"></a></li>
+        <li><a class="icon-twitter" href="" target="_blank" title="{get("contactTitle")}"></a></li>
         <li><a class="icon-whatsapp" href="https://chat.whatsapp.com/D6u9LuqgKYHJwJXCnneXpH" target="_blank" title="{get("joinTheCommunity")}"></a></li>
         <li><a href="{get("changeLanguageLink")}" title="{get("changeLanguageTitle")}"><img src="{get("changeLanguageImage")}" alt="{get("changeLanguageTitle")}"></a></li>
       </ul>
@@ -71,10 +71,9 @@ def parse_pug_to_html(loc):
       </div>
     </div>
     <ul id="social-links">
-      <li><a class="icon-github" href="https://github.com/omarciovsena/abibliadigital" target="_blank" title="{get("githubTitle")}"></a></li>
-      <li><a class="icon-twitter" href="https://twitter.com/omarciovsena" target="_blank" title="{get("contactTitle")}"></a></li>
+      <li><a class="icon-github" href="https://github.com/omarcoscardoso/abibliadigital-api-br" target="_blank" title="{get("githubTitle")}"></a></li>
+      <li><a class="icon-twitter" href="" target="_blank" title="{get("contactTitle")}"></a></li>
       <li><a class="icon-whatsapp" href="https://chat.whatsapp.com/D6u9LuqgKYHJwJXCnneXpH" target="_blank" title="{get("joinTheCommunity")}"></a></li>
-      <li><a class="icon-patreon" href="https://www.patreon.com/omarciovsena" target="_blank" title="{get("donate")}"></a></li>
     </ul>
   </header>
 
@@ -113,11 +112,11 @@ def parse_pug_to_html(loc):
             <p>{get("bannerDescription")}</p>
           </div>
           <div class="col">
-            <a class="btn-primary" href="https://github.com/omarciovsena/abibliadigital/blob/master/DOCUMENTATION.md" target="_blank" title="{get("documentationTitle")}">{get("bannerButton")}</a>
+            <a class="btn-primary" href="https://github.com/omarcoscardoso/abibliadigital-api-br/blob/main/DOCUMENTATION.md" target="_blank" title="{get("documentationTitle")}">{get("bannerButton")}</a>
             <ul id="documentation-links">
-              <li><a class="doc-icon icon-svg" href="https://insomnia.rest/run/?label=AB%C3%ADbliaDigital%20API&uri=https%3A%2F%2Fraw%2Egithubusercontent%2Ecom%2Fomarciovsena%2Fabibliadigital%2Fmaster%2Fdocs%2Finsomnia.json" target="_blank" title="{get("bannerDocInsomniaTitle")}"><img src="/theme-v2/images/ic-insomnia.svg" alt="{get("bannerDocInsomniaTitle")}"></a></li>
+              <li><a class="doc-icon icon-svg" href="https://insomnia.rest/run/?label=AB%C3%ADbliaDigital%20API&uri=https%3A%2F%2Fraw%2Egithubusercontent%2Ecom%2Fomarcoscardoso%2Fabibliadigital-api-br%2Fmain%2Fdocs%2Finsomnia.json" target="_blank" title="{get("bannerDocInsomniaTitle")}"><img src="/theme-v2/images/ic-insomnia.svg" alt="{get("bannerDocInsomniaTitle")}"></a></li>
               <li><a class="doc-icon icon-svg" href="https://www.postman.com/nathabonfim59/workspace/github-contributions/api/c9a09e38-b0ca-41f4-85bb-d7cea69d4866" target="_blank" title="{get("bannerDocPostmanTitle")}"><img src="/theme-v2/images/ic-postman.svg" alt="{get("bannerDocPostmanTitle")}"></a></li>
-              <li><a class="doc-icon icon-svg" href="https://editor.swagger.io/?url=https%3A%2F%2Fraw%2Egithubusercontent%2Ecom%2Fomarciovsena%2Fabibliadigital%2Fmaster%2Fdocs%2Fopenapi.yaml" target="_blank" title="{get("bannerDocSwaggerTitle")}"><img src="/theme-v2/images/ic-swagger.svg" alt="{get("bannerDocSwaggerTitle")}"></a></li>
+              <li><a class="doc-icon icon-svg" href="https://editor.swagger.io/?url=https%3A%2F%2Fraw%2Egithubusercontent%2Ecom%2Fomarcoscardoso%2Fabibliadigital-api-br%2Fmain%2Fdocs%2Fopenapi.yaml" target="_blank" title="{get("bannerDocSwaggerTitle")}"><img src="/theme-v2/images/ic-swagger.svg" alt="{get("bannerDocSwaggerTitle")}"></a></li>
             </ul>
           </div>
         </div>
@@ -131,7 +130,7 @@ def parse_pug_to_html(loc):
       <h2>{get("howToUse")}</h2>
       <p class="font-p mg-bt-30">
         {get("options")}: books, books/gn, verses/nvi/gn/1, verses/acf/gn/1/1
-        <a href="https://github.com/omarciovsena/abibliadigital/blob/master/DOCUMENTATION.md/" target="_blank" title="{get("documentation")}">{get("andMore")}</a>
+        <a href="https://github.com/omarcoscardoso/abibliadigital-api-br/blob/main/DOCUMENTATION.md" target="_blank" title="{get("documentation")}">{get("andMore")}</a>
       </p>
       <form id="form-1">
         <label id="basic-addon3" for="path">https://abibliadigital.api.br/api/</label>
@@ -147,9 +146,6 @@ def parse_pug_to_html(loc):
     <div class="container">
       <h2>{get("contributeTitle")}</h2>
       <p class="font-p mg-bt-30">{get("contributeDescription")}</p>
-      <a href="https://www.patreon.com/omarciovsena" target="_blank">
-        <img src="https://cdn-std.dprcdn.net/files/acc_649651/plrSCT" style="height: 80px;" alt="Patreon">
-      </a>
     </div>
   </section>
 
