@@ -4,5 +4,5 @@ coverage/
 *.log
 server
 raw_data/bible_repo/
-
+biblia.db
 
