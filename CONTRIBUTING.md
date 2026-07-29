@@ -20,12 +20,22 @@ Agradecemos o seu interesse em contribuir com a **ABíbliaDigital**! Este docume
 Antes de abrir um Pull Request, certifique-se de que o código passa nos testes automatizados e segue a formatação padrão em Go:
 
 ```bash
-# Executar a suíte de testes em Go
+# Executar a suíte de testes em Go (necessita do banco biblia.db gerado na raiz)
 go test -v ./...
 
 # Verificar formatação padrão do código Go
 go fmt ./...
 ```
+
+### Validação Automática (CI/CD)
+Após abrir ou atualizar um Pull Request para a branch `main`, o GitHub Actions executará automaticamente o workflow **CI - Run Go Tests**. 
+
+Este workflow irá:
+1. Baixar as dependências do projeto.
+2. Gerar o banco de dados temporário `biblia.db` a partir das bases JSON utilizando `scripts/convert_all_versions.py`.
+3. Executar o comando `go test -v ./...`.
+
+**Nota:** Os testes devem obrigatoriamente passar com sucesso no CI antes que o Pull Request possa ser aprovado e integrado à branch `main`.
 
 ---
 
