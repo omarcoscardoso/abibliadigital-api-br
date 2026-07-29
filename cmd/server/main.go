@@ -92,6 +92,17 @@ func main() {
 		http.ServeFile(w, r, "./public/en/index.html")
 	})
 
+	// Serve OpenAPI Spec & Interactive API Documentation (Scalar)
+	r.Get("/openapi.yaml", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./docs/openapi.yaml")
+	})
+	r.Get("/docs", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./public/docs/index.html")
+	})
+	r.Get("/docs/*", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./public/docs/index.html")
+	})
+
 	workDir, _ := os.Getwd()
 	filesDir := http.Dir(filepath.Join(workDir, "public"))
 	fileServer(r, "/", filesDir)
