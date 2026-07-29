@@ -2,7 +2,7 @@ node_modules/
 .env
 coverage/
 *.log
-server
+/server
 raw_data/bible_repo/
 biblia.db
 

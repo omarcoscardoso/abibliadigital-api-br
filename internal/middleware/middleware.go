@@ -1,7 +1,8 @@
 package middleware
 
 import (
-	"log"
+	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 )
@@ -43,7 +44,7 @@ func CacheControl(next http.Handler) http.Handler {
 	})
 }
 
-// Logger provides lightweight request logging
+// Logger provides structured HTTP request logging via slog
 func Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -54,9 +55,13 @@ func Logger(next http.Handler) http.Handler {
 
 		next.ServeHTTP(interceptor, r)
 
-		log.Printf("[%s] %s %s -> %d (%s)",
-			r.Method, r.URL.Path, r.RemoteAddr,
-			interceptor.statusCode, time.Since(start))
+		slog.InfoContext(r.Context(), "HTTP request",
+			"method", r.Method,
+			"path", r.URL.Path,
+			"remote_addr", r.RemoteAddr,
+			"status", interceptor.statusCode,
+			"duration_ms", time.Since(start).Milliseconds(),
+		)
 	})
 }
 
@@ -65,7 +70,11 @@ func Recovery(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Printf("[PANIC RECOVERED] %v", err)
+				slog.ErrorContext(r.Context(), "Panic recovered",
+					"error", fmt.Sprintf("%v", err),
+					"method", r.Method,
+					"path", r.URL.Path,
+				)
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(`{"msg":"Oops! An unexpected error has occurred, create an issue with the information of this request."}`))
