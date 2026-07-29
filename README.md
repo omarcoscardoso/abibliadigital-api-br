@@ -6,6 +6,16 @@ O projeto conta com **66 livros** e **582.270 versículos** distribuídos em **1
 
 ---
 
+## 🙏 Agradecimentos e Contexto do Projeto
+
+Este projeto nasceu como uma iniciativa de continuidade e gratidão ao projeto original [ABíbliaDigital](https://github.com/omarciovsena/abibliadigital), criado e mantido brilhantemente por [Márcio Sena](https://github.com/omarciovsena) e colaboradores ao longo de quase 8 anos.
+
+Após o anúncio do encerramento das APIs do projeto original em 01/08/2026 motivado pelos altos custos de infraestrutura e tempo de manutenção, esta reescrita em **Go + SQLite Embedded** foi desenvolvida com o objetivo de manter esta valiosa ferramenta viva e acessível para todos, de forma **100% gratuita, stateless, de alta performance e pronta para deploy serverless com custo zero**.
+
+Expressamos nossa profunda gratidão ao Márcio Sena e a todos os contribuidores do projeto original pela dedicação e impacto gerado na comunidade!
+
+---
+
 ## ⚡ Principais Características
 
 - **Ultra-Rápido**: Respostas em tempo sub-milissegundo (~700µs) graças ao SQLite embedded.
