@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>ABíbliaDigital | RESTful API da Bíblia</title>
+  <meta name="author" content="@abibliadigital">
+  <meta name="description" content="Bíblia API - API REST com múltiplas versões da Bíblia Sagrada em 4 idiomas">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <script defer src="/theme-v2/js/jquery-1.12.4.min.js"></script>
+  <script defer src="/theme-v2/js/jquery.json-viewer.js"></script>
+  <link rel="stylesheet" href="/theme-v2/css/jquery.json-viewer.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Playfair+Display:wght@700&display=swap">
+  <link rel="stylesheet" href="/theme-v2/css/normalize.css">
+  <link rel="stylesheet" href="/theme-v2/css/style.css">
+  
+  <link rel="icon" type="image/png" sizes="32x32" href="/theme-v2/images/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/theme-v2/images/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/theme-v2/images/favicon/manifest.json">
+  <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="/pt"><img src="/theme-v2/images/logo-symbol-a-biblia-digital.svg" alt="RESTful API da Bíblia"></a>
+      <button class="icon-menu menu-toggle"></button>
+      <ul>
+        <li><button class="icon-close menu-toggle"></button></li>
+        <li><a class="text section-scroll" href="#about" title="Conheça nosso manifesto">Manifesto</a></li>
+        <li><a class="text section-scroll" href="#howToUse" title="Aprenda a usar">Como usar?</a></li>
+        <li><a class="text" href="https://github.com/omarciovsena/abibliadigital" target="_blank" title="Entenda em detalhes como utilizar cada funcionalidade">Documentação</a></li>
+        <li><a class="text section-scroll" href="#donate" title="Contribua financeiramente para o projeto">Doe</a></li>
+        <li><a class="icon-github" href="https://github.com/omarciovsena/abibliadigital" target="_blank" title="Acessar projeto no Github"></a></li>
+        <li><a class="icon-twitter" href="https://twitter.com/omarciovsena" target="_blank" title="Entre em contato conosco"></a></li>
+        <li><a class="icon-whatsapp" href="https://chat.whatsapp.com/D6u9LuqgKYHJwJXCnneXpH" target="_blank" title="Participe da comunidade"></a></li>
+        <li><a href="/en" title="Switch to English"><img src="/theme-v2/images/en.svg" alt="Switch to English"></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header>
+    <a href="/pt"><img src="/theme-v2/images/logo-a-biblia-digital.svg" alt="RESTful API da Bíblia"></a>
+    <div class="container">
+      <div id="hero">
+        <div class="row">
+          <div class="col">
+            <h1>Não se preocupe em gerir as múltiplas versões da bíblia</h1>
+            <h3>API REST da Bíblia com 7 versões, 4 idiomas e múltiplas funcionalidades para simplificar o seu dia a dia.</h3>
+            <div class="bg"></div>
+          </div>
+          <div class="col">
+            <div id="counter">+11milhões
+              <small>requisições</small>
+              <div class="bg"></div>
+              <div class="bg"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul id="social-links">
+      <li><a class="icon-github" href="https://github.com/omarciovsena/abibliadigital" target="_blank" title="Acessar projeto no Github"></a></li>
+      <li><a class="icon-twitter" href="https://twitter.com/omarciovsena" target="_blank" title="Entre em contato conosco"></a></li>
+      <li><a class="icon-whatsapp" href="https://chat.whatsapp.com/D6u9LuqgKYHJwJXCnneXpH" target="_blank" title="Participe da comunidade"></a></li>
+      <li><a class="icon-patreon" href="https://www.patreon.com/omarciovsena" target="_blank" title="Doe"></a></li>
+    </ul>
+  </header>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <h2>O que nós acreditamos?</h2>
+          <h5>Nosso manifesto</h5>
+          <p>O desenvolvimento de aplicativos e sites ainda é um processo complexo para igrejas e organizações religiosas.</p>
+          <p> Sabemos que a criação de conteúdo exclusivo acaba competindo com tarefas básicas como disponibilizar devocionais, versículos, sermões, comentários, nutrição de redes sociais e tantas outras tarefas do dia a dia.</p>
+          <p>Acreditamos que podemos oferecer muitos desses serviços, gratuitamente, com qualidade profissional e focado na palavra de Deus.</p>
+        </div>
+        <div class="col">
+          <h4>Conteúdo</h4>
+          <p>Múltiplas versões - nvi, ra, acf, kjv, bbe, apee, rvr - em vários idiomas.</p>
+          <h4>Doc</h4>
+          <p>Para simplificar a sua integração, nós temos uma documentação sempre atualizada para consulta.</p>
+          <h4>Disponibilidade</h4>
+          <p>Servidores estáveis e preparados para altas cargas de requisições</p>
+          <h4>Buscar</h4>
+          <p>Busca por palavras chaves, estatísticas e informações completamentares</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Banner CTA -->
+  <section>
+    <div class="container">
+      <div class="banner">
+        <div class="row">
+          <div class="col">
+            <h2>Teste agora!</h2>
+            <p>Acesse nossa documentação, veja o quanto é simples e comece hoje a sua integração.</p>
+          </div>
+          <div class="col">
+            <a class="btn-primary" href="https://github.com/omarciovsena/abibliadigital/blob/master/DOCUMENTATION.md" target="_blank" title="Entenda em detalhes como utilizar cada funcionalidade">Documentação</a>
+            <ul id="documentation-links">
+              <li><a class="doc-icon icon-svg" href="https://insomnia.rest/run/?label=AB%C3%ADbliaDigital%20API&uri=https%3A%2F%2Fraw%2Egithubusercontent%2Ecom%2Fomarciovsena%2Fabibliadigital%2Fmaster%2Fdocs%2Finsomnia.json" target="_blank" title="Abrir documentação da API no Insomnia"><img src="/theme-v2/images/ic-insomnia.svg" alt="Abrir documentação da API no Insomnia"></a></li>
+              <li><a class="doc-icon icon-svg" href="https://www.postman.com/nathabonfim59/workspace/github-contributions/api/c9a09e38-b0ca-41f4-85bb-d7cea69d4866" target="_blank" title="Abrir documentação da API no Postman"><img src="/theme-v2/images/ic-postman.svg" alt="Abrir documentação da API no Postman"></a></li>
+              <li><a class="doc-icon icon-svg" href="https://editor.swagger.io/?url=https%3A%2F%2Fraw%2Egithubusercontent%2Ecom%2Fomarciovsena%2Fabibliadigital%2Fmaster%2Fdocs%2Fopenapi.yaml" target="_blank" title="Abrir documentação da API no Swagger"><img src="/theme-v2/images/ic-swagger.svg" alt="Abrir documentação da API no Swagger"></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How To Use -->
+  <section id="howToUse">
+    <div class="container">
+      <h2>Como usar?</h2>
+      <p class="font-p mg-bt-30">
+        Opções: books, books/gn, verses/nvi/gn/1, verses/acf/gn/1/1
+        <a href="https://github.com/omarciovsena/abibliadigital/blob/master/DOCUMENTATION.md/" target="_blank" title="Documentação">e mais</a>
+      </p>
+      <form id="form-1">
+        <label id="basic-addon3" for="path">https://www.abibliadigital.com.br/api/</label>
+        <input id="path" type="text" aria-describedby="basic-addon3" value="verses/nvi/sl/23" placeholder="verses/{version}/{book}/{chapter}/{number}">
+        <button id="button-addon1" type="submit" title="Buscar">Buscar</button>
+      </form>
+      <pre id="output"></pre>
+    </div>
+  </section>
+
+  <!-- Donate -->
+  <section id="donate">
+    <div class="container">
+      <h2>Contribua com o projeto!</h2>
+      <p class="font-p mg-bt-30">A partir de doações pontuais ou mensais é possível contribuir com o projeto, priorizar novas tarefas e acelerar novas funcionalidades.</p>
+      <a href="https://www.patreon.com/omarciovsena" target="_blank">
+        <img src="https://cdn-std.dprcdn.net/files/acc_649651/plrSCT" style="height: 80px;" alt="Patreon">
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col"><p>Copyright © 2018-2025 ABíbliaDigital. Todos os direitos reservados.</p></div>
+        <div class="col"><a class="btn-small" href="https://stats.uptimerobot.com/5PXmCNLM" target="_blank" title="Página de status">Página de status</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script defer src="/theme-v2/js/main.js"></script>
+  <script defer src="/assets/scripts/app.js"></script>
+</body>
+</html>

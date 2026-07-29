@@ -1,39 +1,63 @@
-# ABibliaDigital Contributing Guide
+# Guia de Contribuição: ABíbliaDigital (Go)
 
-Before submitting your contribution please read the guidelines.
+Agradecemos o seu interesse em contribuir com a **ABíbliaDigital**! Este documento orienta como colaborar com o projeto seguindo as boas práticas do ecossistema Go.
 
-- [Commit Guidelines](#commit-guidelines)
-- [Issue Reporting Guidelines](#issue-reporting-guidelines)
-- [Pull Request Guidelines](#pull-request-guidelines)
+---
 
-## Commit Guidelines
+## 📋 Diretrizes Gerais
 
-Commit messages should follow the [commit message convention](https://www.conventionalcommits.org/en/v1.0.0-beta.2/).
+- **Reportando Issues**: A lista de issues destina-se a relatos de bugs e sugestões de melhorias. Descreva de forma clara os passos para reproduzir qualquer problema.
+- **Pull Requests**: Todas as contribuições devem ser enviadas via Pull Request direcionadas à branch `main`.
 
-## Issue Reporting Guidelines
+---
 
-- Do not create questions. The issue list is exclusively for reports, bugs and feature requests. Use the [Twitter](https://twitter.com/omarciovsena) instead.
+## 🛠️ Ambiente de Desenvolvimento e Comandos
 
-- Always search for your issue first. It may have already been answered, planned or fixed in some branch. New features will be planned on [Trello](https://trello.com/b/VPGRzM36).
+### Pré-requisitos
+- Go 1.22 ou superior
 
-- Only create issues for the newest version.
+### Validação Local de Código
+Antes de abrir um Pull Request, certifique-se de que o código passa nos testes automatizados e segue a formatação padrão em Go:
 
-- Create a declarative title and describe clearly the steps necessary to reproduce the issue. If an issue labeled "need repro" receives no further input from the issue author for more than 3 days, it will be closed.
+```bash
+# Executar a suíte de testes em Go
+go test -v ./...
 
-- If you want to show your code please use [Codepen](http://codepen.io/pen/) or [JSFiddle](https://jsfiddle.net/) or [Postman](https://www.getpostman.com/)
+# Verificar formatação padrão do código Go
+go fmt ./...
+```
 
-- In case you found a solution by yourself try to explain how you fixed it. It could be useful for somebody else. 😃
+---
 
-## Pull Request Guidelines
+## 📝 Convenção de Commits (Conventional Commits)
 
-- The `master` branch is basically just a snapshot of the latest stable release. All development should be done in dedicated branches. **Do not submit PRs against the `master` branch.**
+Todas as mensagens de commit devem seguir rigorosamente o padrão **Conventional Commits** em **Português (Brasil)**:
 
-- Make small commits as you work on the PR. They will be automatically squashed before merging.
+`<tipo>(<escopo>): <descrição em minúsculas sem ponto final>`
 
-- Provide convincing reason to add a new feature. Ideally you should open a suggestion/request issue first and have it greenlighted before working on it.
+### Tipos Permitidos:
+- `feat`: Nova funcionalidade
+- `fix`: Correção de bug
+- `docs`: Alterações apenas em documentação
+- `style`: Formatação, espaços em branco ou estilo sem alterar lógica
+- `refactor`: Refatoração de código
+- `perf`: Melhoria de desempenho
+- `test`: Adição ou correção de testes
+- `chore`: Tarefas de manutenção e dependências
 
-- If fixing a bug:
-  - If you are resolving a special issue, add the GitHub ID to your commit. E.g. `(fix something really ugly #xxx)`
-  - Provide detailed description of the bug in the PR.
+### Exemplos:
+- `feat(api): adicionar suporte ao formato XML`
+- `fix(db): corrigir ordenacao dos versiculos no capitulo`
+- `docs(readme): atualizar instruções de execução local`
+- `chore(deps): atualizar versão do driver sqlite`
 
-Contribution based on the [vue-material](https://github.com/vuematerial/vue-material/blob/master/.github/CONTRIBUTING.md) and [docz](https://github.com/pedronauck/docz/blob/master/CONTRIBUTING.md) contribution files
+---
+
+## 🌿 Fluxo de Branches
+
+1. Crie uma branch a partir da `main`:
+   - `feature/nome-da-funcionalidade`
+   - `bugfix/descricao-do-bug`
+   - `chore/manutencao`
+2. Garanta que todos os testes passem localmente.
+3. Submeta o Pull Request descrevendo claramente as alterações realizadas.
