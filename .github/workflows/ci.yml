@@ -23,5 +23,8 @@ jobs:
           go-version-file: 'go.mod'
           cache: true
 
+      - name: Generate Database
+        run: python3 scripts/convert_all_versions.py
+
       - name: Run Tests
         run: go test -v ./...
