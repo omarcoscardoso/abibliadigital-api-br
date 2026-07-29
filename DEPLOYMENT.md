@@ -8,17 +8,18 @@ Este documento descreve como rodar localmente, empacotar via Docker e realizar o
 
 ### Pré-requisitos:
 - Go 1.22+
-- Python 3.x (apenas para geração/atualização do `biblia.db` se necessário)
+- Python 3.x (apenas se for reconstruir o banco `biblia.db` manualmente)
 
 ### Passos:
-1. Gere o arquivo SQLite `biblia.db`:
-   ```bash
-   python3 scripts/convert_db.py
-   ```
-
-2. Execute o servidor Go:
+1. Execute o servidor Go:
    ```bash
    go run ./cmd/server/main.go
+   ```
+   *Nota: O servidor Go verifica a presença de `biblia.db` na inicialização. Caso o arquivo não exista, ele executa a compilação automática das 19 versões a partir de `data/`.*
+
+2. (Opcional) Para reconstruir manualmente a base de dados SQLite com as 19 versões:
+   ```bash
+   python3 scripts/convert_all_versions.py
    ```
 
 3. Teste a API:
@@ -36,6 +37,7 @@ docker-compose up --build -d
 ```
 
 ### Testando a imagem Docker compilada:
+O `Dockerfile` compila o banco `biblia.db` automaticamente durante a construção da imagem Docker (multi-stage build):
 ```bash
 docker build -t abibliadigital:latest .
 docker run -p 8080:8080 abibliadigital:latest
