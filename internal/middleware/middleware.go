@@ -55,10 +55,18 @@ func Logger(next http.Handler) http.Handler {
 
 		next.ServeHTTP(interceptor, r)
 
+		remoteAddr := r.Header.Get("CF-Connecting-IP")
+		if remoteAddr == "" {
+			remoteAddr = r.Header.Get("X-Forwarded-For")
+		}
+		if remoteAddr == "" {
+			remoteAddr = r.RemoteAddr
+		}
+
 		slog.InfoContext(r.Context(), "HTTP request",
 			"method", r.Method,
 			"path", r.URL.Path,
-			"remote_addr", r.RemoteAddr,
+			"remote_addr", remoteAddr,
 			"status", interceptor.statusCode,
 			"duration_ms", time.Since(start).Milliseconds(),
 		)

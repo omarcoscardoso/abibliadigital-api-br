@@ -129,25 +129,69 @@ O arquivo [`cloudbuild.yaml`](file:///home/cardoso/projetos/abibliadigital/cloud
 
 ---
 
-## 🌐 5. Configuração na Cloudflare (Domínio Personalizado & CDN)
+## 🌐 5. Configuração Completa na Cloudflare (Edge Cache & WAF)
 
-Para mapear seu domínio (ex: `abibliadigital.api.br`) e obter cache gratuito nas bordas globalmente:
+Para integrar a **Cloudflare** como camada de Edge Cache e WAF Gratuito na frente do **GCP Cloud Run**:
 
-1. **Domínio Customizado no Cloud Run:**
-   - Acesse o console do **GCP Cloud Run** -> **Manage Custom Domains**.
-   - Adicione o seu domínio (ex: `abibliadigital.api.br`).
-   - Copie o registro CNAME fornecido pelo GCP (ex: `ghs.googlehosted.com`).
+### 1. Configuração de DNS e Proxying (Nuvem Laranja 🟠)
 
-2. **Configuração de DNS na Cloudflare:**
-   - No painel da **Cloudflare**, acesse **DNS** -> **Add record**:
-     - **Type:** `CNAME`
-     - **Name:** `api` (ou `@`)
-     - **Target:** `ghs.googlehosted.com`
-     - **Proxy status:** `Proxied` (Ícone de nuvem Laranja 🟠 ativado).
+#### Opção A: Domínio Personalizado Mapeado no Cloud Run (Recomendado)
+1. No console do **GCP Cloud Run**, vá em **Custom Domains** -> **Add Mapping** e registre seu domínio/subdomínio (ex: `api.abibliadigital.com.br`).
+2. O GCP gerará um destino CNAME (ex: `ghs.googlehosted.com`).
+3. No painel da **Cloudflare** -> **DNS** -> **Records**, crie o registro:
+   - **Type:** `CNAME`
+   - **Name:** `api` (ou `@` para o domínio raiz)
+   - **Target:** `ghs.googlehosted.com`
+   - **Proxy status:** `Proxied` (Nuvem Laranja 🟠 **ativada**)
 
-3. **Configuração de SSL/TLS na Cloudflare:**
-   - Acesse **SSL/TLS** -> Defina o modo como **Full (strict)**.
+#### Opção B: CNAME Direto para a URL Padrão do Cloud Run
+1. No painel da **Cloudflare** -> **DNS** -> **Records**:
+   - **Type:** `CNAME`
+   - **Name:** `api`
+   - **Target:** `abibliadigital-api-br-xxxxx-uc.a.run.app` (URL gerada pelo Cloud Run)
+   - **Proxy status:** `Proxied` (Nuvem Laranja 🟠 **ativada**)
 
-4. **Regras de Caching e Cabeçalhos HTTP:**
-   - A API Go já emite o cabeçalho `Cache-Control: public, max-age=31536000` em requisições GET com sucesso.
-   - Com o proxy da Cloudflare ativado (Nuvem Laranja), as requisições repetidas de leitura de versículos e livros serão servidas diretamente da memória cache da borda da Cloudflare em **< 10ms**, sem consumir cota do Cloud Run!
+---
+
+### 2. Configuração de SSL/TLS (Criptografia de Ponta a Ponta)
+- No painel da Cloudflare, acesse **SSL/TLS** -> **Overview**.
+- Selecione a opção **Full (strict)**.
+- Isso garante conexão segura (HTTPS) criptografada entre o Usuário -> Cloudflare -> GCP Cloud Run.
+
+---
+
+### 3. Criar Regra de Cache (Cache Rules) — CRUCIAL ⚡
+> [!IMPORTANT]
+> Por padrão, a Cloudflare **NÃO** faz cache de respostas JSON/API apenas com o cabeçalho `Cache-Control`. É **obrigatório** criar uma Cache Rule para ativar o Edge Cache em rotas da API.
+
+1. No painel da Cloudflare, acesse **Caching** -> **Cache Rules** -> **Create Rule**.
+2. **Rule name:** `Cache API GET Requests`
+3. **When incoming requests match:**
+   - Campo: `URI Path` -> Operador: `starts with` -> Valor: `/api/`
+   - **AND**
+   - Campo: `Request Method` -> Operador: `equals` -> Valor: `GET`
+4. **Cache eligibility:** Selecione `Eligible for cache` (Cache Everything).
+5. **Edge TTL:** Selecione `Respect origin` (a API Go já envia `Cache-Control: public, max-age=31536000`).
+6. **Browser TTL:** Selecione `Respect origin`.
+7. Clique em **Deploy**.
+
+Com esta regra ativa:
+- **1ª requisição (Cache Miss):** Requisita ao GCP Cloud Run, lê o banco SQLite e guarda o resultado na borda da Cloudflare.
+- **Requisições subsequentes (Cache Hit):** Respondidas em **< 15ms** direto da rede global da Cloudflare, sem gastar cota do GCP nem acordar o container!
+
+---
+
+### 4. WAF Gratuito e Segurança na Borda
+1. **Bot Fight Mode:**
+   - Acesse **Security** -> **Bots** -> Ative o **Bot Fight Mode** (bloqueia bots maliciosos conhecidos e requisições automatizadas abusivas).
+2. **Rate Limiting (Plano Gratuito):**
+   - Acesse **Security** -> **WAF** -> **Rate limiting rules** -> **Create rule**.
+   - **Name:** `API Rate Limit`
+   - **Match:** `URI Path starts with /api/`
+   - **Rate limit:** `100 requisições` por `1 minuto` por IP.
+   - **Action:** `Block` ou `Managed Challenge`.
+3. **Otimizações Globais:**
+   - Acesse **Speed** -> **Optimization**:
+     - Ative **Brotli** (compressão ultraeficiente para respostas JSON).
+     - Ative **HTTP/3 (with QUIC)** para menor latência em apps móveis.
+
