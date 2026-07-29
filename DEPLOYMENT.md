@@ -81,7 +81,7 @@ gcloud run deploy abibliadigital-api-br \
 
 ## ⚡ 4. Deploy Automático via Cloud Build (CI/CD)
 
-O arquivo [`cloudbuild.yaml`](file:///home/cardoso/projetos/abibliadigital/cloudbuild.yaml) orquestra a compilação, o envio da imagem para o **Artifact Registry** e o deploy no **Cloud Run** (`abibliadigital-api-br`).
+O arquivo [`cloudbuild.yaml`](file:///home/cardoso/projetos/abibliadigital/cloudbuild.yaml) orquestra a compilação, o envio da imagem para o **Container Registry (`gcr.io`)** e o deploy no **Cloud Run** (`abibliadigital-api-br`).
 
 ### Pré-requisitos e Checklist do GCP:
 
@@ -90,22 +90,13 @@ O arquivo [`cloudbuild.yaml`](file:///home/cardoso/projetos/abibliadigital/cloud
    gcloud services enable \
      cloudbuild.googleapis.com \
      run.googleapis.com \
-     artifactregistry.googleapis.com
+     containerregistry.googleapis.com
    ```
 
-2. **Criar o repositório no Artifact Registry (se ainda não existir):**
-   ```bash
-   gcloud artifacts repositories create abibliadigital \
-     --repository-format=docker \
-     --location=us-central1 \
-     --description="Repositório Docker para a API ABíbliaDigital"
-   ```
-
-3. **Conceder permissões para a Service Account do Cloud Build:**
+2. **Conceder permissões para a Service Account do Cloud Build:**
    A conta de serviço do Cloud Build (`[PROJECT_NUMBER]@cloudbuild.gserviceaccount.com`) precisa das seguintes permissões no IAM:
    - **Cloud Run Admin** (`roles/run.admin`)
    - **Service Account User** (`roles/iam.serviceAccountUser`)
-   - **Artifact Registry Writer** (`roles/artifactregistry.writer`)
 
    *Comandos para conceder as permissões via `gcloud`:*
    ```bash
