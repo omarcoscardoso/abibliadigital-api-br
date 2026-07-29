@@ -1,9 +1,10 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
-	"math/rand"
+	"math/rand/v2"
 	"strings"
 	"time"
 
@@ -31,8 +32,6 @@ func NewStore(dbPath string) (*Store, error) {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	rand.Seed(time.Now().UnixNano())
-
 	return &Store{db: db}, nil
 }
 
@@ -41,15 +40,15 @@ func (s *Store) Close() error {
 }
 
 // GetBooks returns all books ordered by book_order
-func (s *Store) GetBooks() ([]models.Book, error) {
+func (s *Store) GetBooks(ctx context.Context) ([]models.Book, error) {
 	query := `
 		SELECT abbrev_pt, abbrev_en, name, author, chapters, group_name, testament, comment, book_order 
 		FROM books 
 		ORDER BY book_order ASC
 	`
-	rows, err := s.db.Query(query)
+	rows, err := s.db.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query books: %w", err)
 	}
 	defer rows.Close()
 
@@ -61,16 +60,20 @@ func (s *Store) GetBooks() ([]models.Book, error) {
 			&b.Chapters, &b.Group, &b.Testament, &b.Comment, &b.Order,
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to scan book row: %w", err)
 		}
 		books = append(books, b)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating book rows: %w", err)
 	}
 
 	return books, nil
 }
 
 // GetBook returns a book by Portuguese or English abbreviation
-func (s *Store) GetBook(abbrev string) (*models.Book, error) {
+func (s *Store) GetBook(ctx context.Context, abbrev string) (*models.Book, error) {
 	query := `
 		SELECT abbrev_pt, abbrev_en, name, author, chapters, group_name, testament, comment, book_order 
 		FROM books 
@@ -78,7 +81,7 @@ func (s *Store) GetBook(abbrev string) (*models.Book, error) {
 		LIMIT 1
 	`
 	var b models.Book
-	err := s.db.QueryRow(query, abbrev, abbrev).Scan(
+	err := s.db.QueryRowContext(ctx, query, abbrev, abbrev).Scan(
 		&b.Abbrev.Pt, &b.Abbrev.En, &b.Name, &b.Author,
 		&b.Chapters, &b.Group, &b.Testament, &b.Comment, &b.Order,
 	)
@@ -86,14 +89,14 @@ func (s *Store) GetBook(abbrev string) (*models.Book, error) {
 		return nil, nil
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query book '%s': %w", abbrev, err)
 	}
 	return &b, nil
 }
 
 // GetChapter returns all verses for a given version, book abbreviation and chapter
-func (s *Store) GetChapter(version, abbrev string, chapter int) (*models.ChapterResponse, error) {
-	book, err := s.GetBook(abbrev)
+func (s *Store) GetChapter(ctx context.Context, version, abbrev string, chapter int) (*models.ChapterResponse, error) {
+	book, err := s.GetBook(ctx, abbrev)
 	if err != nil || book == nil {
 		return nil, err
 	}
@@ -104,9 +107,9 @@ func (s *Store) GetChapter(version, abbrev string, chapter int) (*models.Chapter
 		WHERE version = ? AND (LOWER(book_abbrev_pt) = LOWER(?) OR LOWER(book_abbrev_en) = LOWER(?)) AND chapter = ?
 		ORDER BY number ASC
 	`
-	rows, err := s.db.Query(query, version, abbrev, abbrev, chapter)
+	rows, err := s.db.QueryContext(ctx, query, version, abbrev, abbrev, chapter)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query chapter %d for version '%s': %w", chapter, version, err)
 	}
 	defer rows.Close()
 
@@ -114,9 +117,13 @@ func (s *Store) GetChapter(version, abbrev string, chapter int) (*models.Chapter
 	for rows.Next() {
 		var v models.VerseItem
 		if err := rows.Scan(&v.Number, &v.Text); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to scan verse row: %w", err)
 		}
 		verses = append(verses, v)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating chapter verse rows: %w", err)
 	}
 
 	if len(verses) == 0 {
@@ -140,8 +147,8 @@ func (s *Store) GetChapter(version, abbrev string, chapter int) (*models.Chapter
 }
 
 // GetVerse returns a specific verse
-func (s *Store) GetVerse(version, abbrev string, chapter, number int) (*models.SingleVerseResponse, error) {
-	book, err := s.GetBook(abbrev)
+func (s *Store) GetVerse(ctx context.Context, version, abbrev string, chapter, number int) (*models.SingleVerseResponse, error) {
+	book, err := s.GetBook(ctx, abbrev)
 	if err != nil || book == nil {
 		return nil, err
 	}
@@ -153,12 +160,12 @@ func (s *Store) GetVerse(version, abbrev string, chapter, number int) (*models.S
 		LIMIT 1
 	`
 	var text string
-	err = s.db.QueryRow(query, version, abbrev, abbrev, chapter, number).Scan(&text)
+	err = s.db.QueryRowContext(ctx, query, version, abbrev, abbrev, chapter, number).Scan(&text)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query verse %d:%d: %w", chapter, number, err)
 	}
 
 	return &models.SingleVerseResponse{
@@ -176,28 +183,28 @@ func (s *Store) GetVerse(version, abbrev string, chapter, number int) (*models.S
 }
 
 // GetRandomVerse returns a random verse for a version and optional book abbreviation
-func (s *Store) GetRandomVerse(version, abbrev string) (*models.SingleVerseResponse, error) {
+func (s *Store) GetRandomVerse(ctx context.Context, version, abbrev string) (*models.SingleVerseResponse, error) {
 	var book *models.Book
 	var err error
 
 	if abbrev != "" {
-		book, err = s.GetBook(abbrev)
+		book, err = s.GetBook(ctx, abbrev)
 	}
 
 	if book == nil {
-		books, err := s.GetBooks()
+		books, err := s.GetBooks(ctx)
 		if err != nil || len(books) == 0 {
 			return nil, err
 		}
-		book = &books[rand.Intn(len(books))]
+		book = &books[rand.N(len(books))]
 	}
 
 	if book.Chapters <= 0 {
 		book.Chapters = 1
 	}
 
-	randChapter := rand.Intn(book.Chapters) + 1
-	chapterResp, err := s.GetChapter(version, book.Abbrev.Pt, randChapter)
+	randChapter := rand.N(book.Chapters) + 1
+	chapterResp, err := s.GetChapter(ctx, version, book.Abbrev.Pt, randChapter)
 
 	// Fallback retry if chapter has no verses
 	if err != nil || chapterResp == nil || len(chapterResp.Verses) == 0 {
@@ -210,9 +217,9 @@ func (s *Store) GetRandomVerse(version, abbrev string) (*models.SingleVerseRespo
 		`
 		var chap, num int
 		var text string
-		err := s.db.QueryRow(query, version, book.Abbrev.Pt, book.Abbrev.Pt).Scan(&chap, &num, &text)
+		err := s.db.QueryRowContext(ctx, query, version, book.Abbrev.Pt, book.Abbrev.Pt).Scan(&chap, &num, &text)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to query random verse: %w", err)
 		}
 		return &models.SingleVerseResponse{
 			Book: models.VerseHeader{
@@ -228,7 +235,7 @@ func (s *Store) GetRandomVerse(version, abbrev string) (*models.SingleVerseRespo
 		}, nil
 	}
 
-	randIdx := rand.Intn(len(chapterResp.Verses))
+	randIdx := rand.N(len(chapterResp.Verses))
 	selectedVerse := chapterResp.Verses[randIdx]
 
 	return &models.SingleVerseResponse{
@@ -240,8 +247,8 @@ func (s *Store) GetRandomVerse(version, abbrev string) (*models.SingleVerseRespo
 }
 
 // Search returns verses matching the search string for a version
-func (s *Store) Search(version, searchText string) (*models.SearchResponse, error) {
-	books, err := s.GetBooks()
+func (s *Store) Search(ctx context.Context, version, searchText string) (*models.SearchResponse, error) {
+	books, err := s.GetBooks(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -280,9 +287,9 @@ func (s *Store) Search(version, searchText string) (*models.SearchResponse, erro
 		ORDER BY id ASC
 	`, strings.Join(conditions, " AND "))
 
-	rows, err := s.db.Query(query, args...)
+	rows, err := s.db.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("search query failed: %w", err)
 	}
 	defer rows.Close()
 
@@ -293,7 +300,7 @@ func (s *Store) Search(version, searchText string) (*models.SearchResponse, erro
 		var text string
 
 		if err := rows.Scan(&abbrevPt, &abbrevEn, &chap, &num, &text); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to scan search verse row: %w", err)
 		}
 
 		b, ok := bookMapEn[abbrevEn]
@@ -309,6 +316,10 @@ func (s *Store) Search(version, searchText string) (*models.SearchResponse, erro
 		})
 	}
 
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating search result rows: %w", err)
+	}
+
 	if items == nil {
 		items = []models.SearchVerseItem{}
 	}
@@ -321,16 +332,16 @@ func (s *Store) Search(version, searchText string) (*models.SearchResponse, erro
 }
 
 // GetVersions returns all versions and total verse counts
-func (s *Store) GetVersions() ([]models.VersionResponse, error) {
+func (s *Store) GetVersions(ctx context.Context) ([]models.VersionResponse, error) {
 	query := `
 		SELECT version, COUNT(*) as count 
 		FROM verses 
 		GROUP BY version 
 		ORDER BY version ASC
 	`
-	rows, err := s.db.Query(query)
+	rows, err := s.db.QueryContext(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to query versions: %w", err)
 	}
 	defer rows.Close()
 
@@ -338,9 +349,13 @@ func (s *Store) GetVersions() ([]models.VersionResponse, error) {
 	for rows.Next() {
 		var v models.VersionResponse
 		if err := rows.Scan(&v.Version, &v.Verses); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to scan version row: %w", err)
 		}
 		versions = append(versions, v)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error iterating version rows: %w", err)
 	}
 
 	return versions, nil

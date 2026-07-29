@@ -33,7 +33,7 @@ func respondError(w http.ResponseWriter, status int, msg string) {
 
 // GET /api/books
 func (h *APIHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
-	books, err := h.store.GetBooks()
+	books, err := h.store.GetBooks(r.Context())
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Failed to retrieve books")
 		return
@@ -66,7 +66,7 @@ func (h *APIHandler) GetBooks(w http.ResponseWriter, r *http.Request) {
 // GET /api/books/:abbrev
 func (h *APIHandler) GetBook(w http.ResponseWriter, r *http.Request) {
 	abbrev := chi.URLParam(r, "abbrev")
-	book, err := h.store.GetBook(abbrev)
+	book, err := h.store.GetBook(r.Context(), abbrev)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Error retrieving book")
 		return
@@ -91,7 +91,7 @@ func (h *APIHandler) GetChapter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := h.store.GetBook(abbrev)
+	book, err := h.store.GetBook(r.Context(), abbrev)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Error checking book")
 		return
@@ -101,7 +101,7 @@ func (h *APIHandler) GetChapter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	chapterResp, err := h.store.GetChapter(version, abbrev, chapNum)
+	chapterResp, err := h.store.GetChapter(r.Context(), version, abbrev, chapNum)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Error retrieving chapter")
 		return
@@ -128,7 +128,7 @@ func (h *APIHandler) GetVerse(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := h.store.GetBook(abbrev)
+	book, err := h.store.GetBook(r.Context(), abbrev)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Error checking book")
 		return
@@ -138,7 +138,7 @@ func (h *APIHandler) GetVerse(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	verseResp, err := h.store.GetVerse(version, abbrev, chapNum, numVal)
+	verseResp, err := h.store.GetVerse(r.Context(), version, abbrev, chapNum, numVal)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Error retrieving verse")
 		return
@@ -156,7 +156,7 @@ func (h *APIHandler) GetRandomVerse(w http.ResponseWriter, r *http.Request) {
 	version := chi.URLParam(r, "version")
 	abbrev := chi.URLParam(r, "abbrev")
 
-	verseResp, err := h.store.GetRandomVerse(version, abbrev)
+	verseResp, err := h.store.GetRandomVerse(r.Context(), version, abbrev)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Error generating random verse")
 		return
@@ -182,7 +182,7 @@ func (h *APIHandler) Search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res, err := h.store.Search(req.Version, req.Search)
+	res, err := h.store.Search(r.Context(), req.Version, req.Search)
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Error searching verses")
 		return
@@ -193,7 +193,7 @@ func (h *APIHandler) Search(w http.ResponseWriter, r *http.Request) {
 
 // GET /api/versions
 func (h *APIHandler) GetVersions(w http.ResponseWriter, r *http.Request) {
-	versions, err := h.store.GetVersions()
+	versions, err := h.store.GetVersions(r.Context())
 	if err != nil {
 		respondError(w, http.StatusInternalServerError, "Error retrieving versions")
 		return

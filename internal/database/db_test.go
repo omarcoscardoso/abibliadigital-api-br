@@ -1,6 +1,7 @@
 package database_test
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -28,8 +29,9 @@ func TestDatabaseQueryPerformance(t *testing.T) {
 	store := getTestStore(t)
 	defer store.Close()
 
+	ctx := context.Background()
 	start := time.Now()
-	chapter, err := store.GetChapter("nvi", "tg", 1)
+	chapter, err := store.GetChapter(ctx, "nvi", "tg", 1)
 	duration := time.Since(start)
 
 	if err != nil {
@@ -51,8 +53,9 @@ func TestDatabaseSearchPerformance(t *testing.T) {
 	store := getTestStore(t)
 	defer store.Close()
 
+	ctx := context.Background()
 	start := time.Now()
-	res, err := store.Search("nvi", "Deus")
+	res, err := store.Search(ctx, "nvi", "Deus")
 	duration := time.Since(start)
 
 	if err != nil {
