@@ -81,6 +81,12 @@ Consulte o guia completo de deploy e integração com a Cloudflare em [`DEPLOYME
 
 ---
 
+## 🤖 Agent Skills para Desenvolvimento (Go)
+
+Este repositório conta com um conjunto de **46 Agent Skills** em [`.agents/skills/`](/.agents/README.md) baseadas nas diretrizes de [`samber/cc-skills-golang`](https://github.com/samber/cc-skills-golang). Elas orientam assistentes de IA (como Antigravity, Cursor e Claude Code) a seguirem automaticamente as melhores práticas de Go (concorrência, segurança, testes, `slog`, etc.) durante o desenvolvimento.
+
+---
+
 ## 📄 Licença
 
 Este projeto está sob a licença **MIT** - veja o arquivo [`LICENSE.md`](/LICENSE.md) para mais detalhes.
