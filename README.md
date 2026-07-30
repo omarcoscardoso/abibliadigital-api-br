@@ -2,7 +2,7 @@
 
 API RESTful moderna, estateless e de altíssima performance para a Bíblia Sagrada escrita em **Go** com banco de dados **SQLite embutido** em modo *read-only*.
 
-O projeto conta com **66 livros** e **582.270 versículos** distribuídos em **19 versões** (incluindo NVI, ACF, AA, KJV, BBE, RVR, APEE e outras).
+O projeto conta com **66 livros** e **781.508 versículos** distribuídos em **26 versões** (incluindo NVI, NVT, NTLH, ACF, AA, BLIVRE, ALM1911, OL, MENS, AS21, KJV, BBE, RVR, APEE e outras em 14 idiomas).
 
 ---
 
@@ -13,6 +13,8 @@ Este projeto nasceu como uma iniciativa de continuidade e gratidão ao projeto o
 Após o anúncio do encerramento das APIs do projeto original em 01/08/2026 motivado pelos altos custos de infraestrutura e tempo de manutenção, esta reescrita em **Go + SQLite Embedded** foi desenvolvida com o objetivo de manter esta valiosa ferramenta viva e acessível para todos, de forma **100% gratuita, stateless, de alta performance e pronta para deploy serverless com custo zero**.
 
 Expressamos nossa profunda gratidão ao Márcio Sena e a todos os contribuidores do projeto original pela dedicação e impacto gerado na comunidade!
+
+Agradecemos também ao projeto open-source [damarals/biblias](https://github.com/damarals/biblias) de [Daniel Amaral](https://github.com/damarals), repositório fundamental que serviu de fonte de dados para diversas traduções em português incorporadas (como NVT, NTLH, Bíblia Livre, Almeida 1911, O Livro, A Mensagem, Almeida Século 21 e atualização da NVI).
 
 ---
 

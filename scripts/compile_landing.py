@@ -112,10 +112,9 @@ def parse_pug_to_html(loc):
             <p>{get("bannerDescription")}</p>
           </div>
           <div class="col">
-            <a class="btn-primary" href="https://github.com/omarcoscardoso/abibliadigital-api-br/blob/main/DOCUMENTATION.md" target="_blank" title="{get("documentationTitle")}">{get("bannerButton")}</a>
+            <a class="btn-primary" href="https://abibliadigital.api.br/docs" target="_blank" title="{get("documentationTitle")}">{get("bannerButton")}</a>
             <ul id="documentation-links">
               <li><a class="doc-icon icon-svg" href="https://insomnia.rest/run/?label=AB%C3%ADbliaDigital%20API&uri=https%3A%2F%2Fraw%2Egithubusercontent%2Ecom%2Fomarcoscardoso%2Fabibliadigital-api-br%2Fmain%2Fdocs%2Finsomnia.json" target="_blank" title="{get("bannerDocInsomniaTitle")}"><img src="/theme-v2/images/ic-insomnia.svg" alt="{get("bannerDocInsomniaTitle")}"></a></li>
-              <li><a class="doc-icon icon-svg" href="https://www.postman.com/nathabonfim59/workspace/github-contributions/api/c9a09e38-b0ca-41f4-85bb-d7cea69d4866" target="_blank" title="{get("bannerDocPostmanTitle")}"><img src="/theme-v2/images/ic-postman.svg" alt="{get("bannerDocPostmanTitle")}"></a></li>
               <li><a class="doc-icon icon-svg" href="https://editor.swagger.io/?url=https%3A%2F%2Fraw%2Egithubusercontent%2Ecom%2Fomarcoscardoso%2Fabibliadigital-api-br%2Fmain%2Fdocs%2Fopenapi.yaml" target="_blank" title="{get("bannerDocSwaggerTitle")}"><img src="/theme-v2/images/ic-swagger.svg" alt="{get("bannerDocSwaggerTitle")}"></a></li>
             </ul>
           </div>
@@ -154,7 +153,7 @@ def parse_pug_to_html(loc):
     <div class="container">
       <div class="row">
         <div class="col"><p>{get("credits")}</p></div>
-        <div class="col"><a class="btn-small" href="https://stats.uptimerobot.com/5PXmCNLM" target="_blank" title="{get("statusPage")}">{get("statusPage")}</a></div>
+        # <div class="col"><a class="btn-small" href="https://stats.uptimerobot.com/5PXmCNLM" target="_blank" title="{get("statusPage")}">{get("statusPage")}</a></div>
       </div>
     </div>
   </footer>

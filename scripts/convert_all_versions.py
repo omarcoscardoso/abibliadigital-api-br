@@ -8,6 +8,13 @@ import glob
 DB_PATH = "biblia.db"
 
 VERSION_MAPPING = {
+    "pt_nvt.json": "nvt",
+    "pt_ntlh.json": "ntlh",
+    "pt_blivre.json": "blivre",
+    "pt_alm1911.json": "alm1911",
+    "pt_ol.json": "ol",
+    "pt_mens.json": "mens",
+    "pt_as21.json": "as21",
     "pt_nvi.json": "nvi",
     "pt_acf.json": "acf",
     "pt_aa.json": "aa",
