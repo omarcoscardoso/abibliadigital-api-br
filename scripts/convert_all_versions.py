@@ -97,6 +97,7 @@ def populate_database(conn):
         books_data = json.load(f)
 
     book_id_map = {}
+    name_map = {}
     for idx, b in enumerate(books_data, start=1):
         abbrev_dict = b.get("abbrev", {})
         if isinstance(abbrev_dict, str):
@@ -120,9 +121,21 @@ def populate_database(conn):
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (abbrev_pt, abbrev_en, name, author, chapters, group_name, testament, comment, order))
 
-        book_id = cursor.lastrowid
-        book_id_map[abbrev_pt.lower()] = (book_id, abbrev_pt, abbrev_en)
-        book_id_map[abbrev_en.lower()] = (book_id, abbrev_pt, abbrev_en)
+        book_id = b.get("id", cursor.lastrowid)
+        info = (book_id, abbrev_pt, abbrev_en)
+        book_id_map[abbrev_pt.lower()] = info
+        book_id_map[abbrev_en.lower()] = info
+        name_map[name.lower()] = info
+
+    # Common alias overrides for version JSONs
+    aliases = {
+        "atos": book_id_map.get("at"),
+        "act": book_id_map.get("act"),
+        "acts": book_id_map.get("act"),
+    }
+    for k, v in aliases.items():
+        if v:
+            book_id_map[k] = v
 
     json_dir = "data/json"
     json_files = sorted(glob.glob(os.path.join(json_dir, "*.json")))
@@ -140,16 +153,12 @@ def populate_database(conn):
         verses_to_insert = []
         for book_obj in version_data:
             abbrev = book_obj.get("abbrev", "").lower()
-            book_info = book_id_map.get(abbrev)
+            bname = book_obj.get("name", "").lower()
+
+            book_info = book_id_map.get(abbrev) or name_map.get(bname)
 
             if not book_info:
-                # Try fallback matching
-                for key, val in book_id_map.items():
-                    if key in abbrev or abbrev in key:
-                        book_info = val
-                        break
-
-            if not book_info:
+                print(f"  [WARNING] Could not match book in {filename}: abbrev='{abbrev}', name='{bname}'")
                 book_id, b_pt, b_en = 0, abbrev, abbrev
             else:
                 book_id, b_pt, b_en = book_info
