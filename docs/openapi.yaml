@@ -21,6 +21,9 @@ servers:
     description: Local server
 
 tags:
+  - name: Health
+    description: Health check and uptime status endpoints
+
   - name: Books
 
   - name: Verses
@@ -187,10 +190,79 @@ components:
       required:
         - msg
 
+    CheckResponse:
+      type: object
+      properties:
+        result:
+          type: string
+          example: success
+        status:
+          type: string
+          example: ok
+        database:
+          type: string
+          example: connected
+        uptime:
+          type: string
+          example: 1h2m30s
+        timestamp:
+          type: string
+          format: date-time
+          example: 2026-08-05T13:40:00Z
+      required:
+        - result
+        - status
+        - database
+        - timestamp
+
 security:
   - bearerAuth: []
 
 paths:
+  /check:
+    get:
+      security: []
+      summary: API Health Check
+      description: Check API uptime, application status, and SQLite database connectivity
+      operationId: healthCheck
+      tags:
+        - Health
+      responses:
+        '200':
+          description: API is healthy and database is connected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckResponse'
+        '503':
+          description: API is degraded or database is disconnected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckResponse'
+
+  /health:
+    get:
+      security: []
+      summary: API Health Check
+      description: Check API uptime, application status, and SQLite database connectivity
+      operationId: healthCheckRoot
+      tags:
+        - Health
+      responses:
+        '200':
+          description: API is healthy and database is connected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckResponse'
+        '503':
+          description: API is degraded or database is disconnected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckResponse'
+
   /books:
     get:
       summary: Get Books

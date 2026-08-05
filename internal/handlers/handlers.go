@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 
@@ -12,11 +14,15 @@ import (
 )
 
 type APIHandler struct {
-	store *database.Store
+	store     *database.Store
+	startTime time.Time
 }
 
 func NewAPIHandler(store *database.Store) *APIHandler {
-	return &APIHandler{store: store}
+	return &APIHandler{
+		store:     store,
+		startTime: time.Now(),
+	}
 }
 
 func respondJSON(w http.ResponseWriter, status int, data interface{}) {
@@ -206,9 +212,35 @@ func (h *APIHandler) GetVersions(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, versions)
 }
 
-// GET /api/check
+// GET /api/check & GET /health
 func (h *APIHandler) Check(w http.ResponseWriter, r *http.Request) {
-	respondJSON(w, http.StatusOK, models.CheckResponse{Result: "success"})
+	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
+	defer cancel()
+
+	status := "ok"
+	dbStatus := "connected"
+	httpStatus := http.StatusOK
+
+	if h.store != nil {
+		if err := h.store.Ping(ctx); err != nil {
+			status = "degraded"
+			dbStatus = "disconnected"
+			httpStatus = http.StatusServiceUnavailable
+		}
+	}
+
+	var uptime string
+	if !h.startTime.IsZero() {
+		uptime = time.Since(h.startTime).Truncate(time.Second).String()
+	}
+
+	respondJSON(w, httpStatus, models.CheckResponse{
+		Result:    "success",
+		Status:    status,
+		Database:  dbStatus,
+		Uptime:    uptime,
+		Timestamp: time.Now().UTC().Format(time.RFC3339),
+	})
 }
 
 // Transparent User and Request Mocks for Legacy Compatibility

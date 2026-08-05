@@ -87,7 +87,12 @@ type ErrorResponse struct {
 	Msg string `json:"msg"`
 }
 
-// CheckResponse represents response for GET /api/check
+// CheckResponse represents response for GET /api/check and /health endpoints
 type CheckResponse struct {
-	Result string `json:"result"`
+	Result    string `json:"result"`
+	Status    string `json:"status"`
+	Database  string `json:"database"`
+	Uptime    string `json:"uptime,omitempty"`
+	Timestamp string `json:"timestamp"`
 }
+
