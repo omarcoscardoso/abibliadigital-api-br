@@ -214,6 +214,7 @@ func (h *APIHandler) GetVersions(w http.ResponseWriter, r *http.Request) {
 
 // GET /api/check & GET /health
 func (h *APIHandler) Check(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 	defer cancel()
 
