@@ -39,6 +39,11 @@ func (s *Store) Close() error {
 	return s.db.Close()
 }
 
+// Ping checks if the database connection is alive
+func (s *Store) Ping(ctx context.Context) error {
+	return s.db.PingContext(ctx)
+}
+
 // GetBooks returns all books ordered by book_order
 func (s *Store) GetBooks(ctx context.Context) ([]models.Book, error) {
 	query := `

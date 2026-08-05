@@ -55,9 +55,14 @@ func main() {
 	r.Use(middleware.CORS)
 	r.Use(middleware.CacheControl)
 
+	// Health check endpoints for monitoring and probes
+	r.Get("/health", h.Check)
+	r.Get("/healthz", h.Check)
+
 	// API Routes
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/check", h.Check)
+		r.Get("/health", h.Check)
 
 		r.Get("/books", h.GetBooks)
 		r.Get("/books/{abbrev}", h.GetBook)

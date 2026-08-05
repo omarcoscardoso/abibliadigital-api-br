@@ -37,8 +37,10 @@ func setupTestServer(t *testing.T) (*httptest.Server, func()) {
 	r.Use(middleware.CORS)
 	r.Use(middleware.CacheControl)
 
+	r.Get("/health", h.Check)
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/check", h.Check)
+		r.Get("/health", h.Check)
 		r.Get("/books", h.GetBooks)
 		r.Get("/books/{abbrev}", h.GetBook)
 		r.Get("/versions", h.GetVersions)
@@ -62,14 +64,74 @@ func TestCheckEndpoint(t *testing.T) {
 	ts, cleanup := setupTestServer(t)
 	defer cleanup()
 
-	resp, err := http.Get(ts.URL + "/api/check")
+	endpoints := []string{"/api/check", "/api/health", "/health"}
+
+	for _, endpoint := range endpoints {
+		t.Run(endpoint, func(t *testing.T) {
+			resp, err := http.Get(ts.URL + endpoint)
+			if err != nil {
+				t.Fatalf("failed to make request to %s: %v", endpoint, err)
+			}
+			defer resp.Body.Close()
+
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("expected status 200 for %s, got %d", endpoint, resp.StatusCode)
+			}
+
+			var res models.CheckResponse
+			if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
+				t.Fatalf("failed to decode response for %s: %v", endpoint, err)
+			}
+
+			if res.Result != "success" {
+				t.Errorf("expected result 'success', got '%s'", res.Result)
+			}
+			if res.Status != "ok" {
+				t.Errorf("expected status 'ok', got '%s'", res.Status)
+			}
+			if res.Database != "connected" {
+				t.Errorf("expected database 'connected', got '%s'", res.Database)
+			}
+			if res.Timestamp == "" {
+				t.Errorf("expected non-empty timestamp")
+			}
+		})
+	}
+}
+
+func TestCheckEndpointDegraded(t *testing.T) {
+	// Handler with nil store to simulate DB error
+	h := handlers.NewAPIHandler(nil)
+	r := chi.NewRouter()
+	r.Get("/health", h.Check)
+
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+
+	// Wait: with store == nil, Check handler considers store optional / ok or if store is closed... Wait!
+	// Let's test with a closed store!
+	dbPath := filepath.Join("..", "..", "biblia.db")
+	store, err := database.NewStore(dbPath)
+	if err != nil {
+		t.Fatalf("failed to connect to test db: %v", err)
+	}
+	_ = store.Close() // Close store immediately to induce Ping error
+
+	hClosed := handlers.NewAPIHandler(store)
+	rClosed := chi.NewRouter()
+	rClosed.Get("/health", hClosed.Check)
+
+	tsClosed := httptest.NewServer(rClosed)
+	defer tsClosed.Close()
+
+	resp, err := http.Get(tsClosed.URL + "/health")
 	if err != nil {
 		t.Fatalf("failed to make request: %v", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		t.Errorf("expected status 200, got %d", resp.StatusCode)
+	if resp.StatusCode != http.StatusServiceUnavailable {
+		t.Errorf("expected status 503 Service Unavailable for closed DB, got %d", resp.StatusCode)
 	}
 
 	var res models.CheckResponse
@@ -77,10 +139,14 @@ func TestCheckEndpoint(t *testing.T) {
 		t.Fatalf("failed to decode response: %v", err)
 	}
 
-	if res.Result != "success" {
-		t.Errorf("expected result 'success', got '%s'", res.Result)
+	if res.Status != "degraded" {
+		t.Errorf("expected status 'degraded', got '%s'", res.Status)
+	}
+	if res.Database != "disconnected" {
+		t.Errorf("expected database 'disconnected', got '%s'", res.Database)
 	}
 }
+
 
 func TestGetBooks(t *testing.T) {
 	ts, cleanup := setupTestServer(t)
