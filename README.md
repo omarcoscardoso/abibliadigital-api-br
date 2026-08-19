@@ -1,3 +1,4 @@
+# https://abibliadigital.api.br
 # ABíbliaDigital (Go + SQLite Embedded)
 
 API RESTful moderna, estateless e de altíssima performance para a Bíblia Sagrada escrita em **Go** com banco de dados **SQLite embutido** em modo *read-only*.
