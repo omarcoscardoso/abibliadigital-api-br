@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	chimiddleware "github.com/go-chi/chi/v5/middleware"
 
 	"abibliadigital/internal/database"
 	"abibliadigital/internal/handlers"
@@ -50,6 +51,7 @@ func main() {
 
 	r := chi.NewRouter()
 
+	r.Use(chimiddleware.GetHead)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recovery)
 	r.Use(middleware.CORS)
@@ -57,12 +59,18 @@ func main() {
 
 	// Health check endpoints for monitoring and probes
 	r.Get("/health", h.Check)
+	r.Head("/health", h.Check)
+
 	r.Get("/healthz", h.Check)
+	r.Head("/healthz", h.Check)
 
 	// API Routes
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/check", h.Check)
+		r.Head("/check", h.Check)
+
 		r.Get("/health", h.Check)
+		r.Head("/health", h.Check)
 
 		r.Get("/books", h.GetBooks)
 		r.Get("/books/{abbrev}", h.GetBook)
