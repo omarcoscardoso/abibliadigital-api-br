@@ -153,7 +153,7 @@ def parse_pug_to_html(loc):
     <div class="container">
       <div class="row">
         <div class="col"><p>{get("credits")}</p></div>
-        # <div class="col"><a class="btn-small" href="https://stats.uptimerobot.com/5PXmCNLM" target="_blank" title="{get("statusPage")}">{get("statusPage")}</a></div>
+        # <div class="col"><a class="btn-small" href="https://stats.uptimerobot.com/4YxIqI4OBm/803888373" target="_blank" title="{get("statusPage")}">{get("statusPage")}</a></div>
       </div>
     </div>
   </footer>
