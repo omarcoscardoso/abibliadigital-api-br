@@ -563,7 +563,7 @@
   },
   {
     "id": 56,
-    "chapters": 2,
+    "chapters": 3,
     "abbrev": { "pt": "tt", "en": "tt" },
     "comment": "",
     "group": "Cartas",
@@ -573,7 +573,7 @@
   },
   {
     "id": 57,
-    "chapters": 4,
+    "chapters": 1,
     "abbrev": { "pt": "fm", "en": "phm" },
     "comment": "",
     "group": "Cartas",
